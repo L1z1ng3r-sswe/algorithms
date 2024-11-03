@@ -30,12 +30,9 @@ Given an array nums containing n distinct numbers in the range [0, n], return th
 ```
 
 ## What I Didn't Think About The First Time
-First approach:
-Sum Formula: The formula n(n+1)/2 works because consecutive numbers pair up symmetrically to derive 
-n+1.
+consider using constant time.
 
-Second approach:
-Swapping with while Loop: This ensures that each element is moved to its correct position. The while loop keeps iterating to place each element correctly, and it stops once the element is positioned or can't be swapped further (e.g., when a previously placed value is smaller).
+i didn't consider while loop because i expected to just swap elements blindly and leave the variable where i was putting the current value, i needed to find all the elements for the current index and only after this shift
 
 ## Solution (C++)
 ```cpp
@@ -83,5 +80,3 @@ class Solution {
 n - length of nums
 time: O(n)
 space: O(1)
-
-
