@@ -1,6 +1,6 @@
-SRC = main.cpp
-DESTINATION_BUILD = main.exe
+SRC = solution/main.cpp
+DESTINATION_BUILD = solution/main.exe
 
-run:
+run:	
 	g++ ${SRC} -o ${DESTINATION_BUILD}
-	./main.exe
+	./${DESTINATION_BUILD}
