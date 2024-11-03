@@ -9,3 +9,4 @@ All problems are categorized by topic, and every solution is implemented in C++.
 - The actual approach that led to the solution
 - Lessons learned from solving the problem
 - The final C++ solution
+- The complexity of the problem (Big O notation)
