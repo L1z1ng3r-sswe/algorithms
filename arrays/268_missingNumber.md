@@ -30,9 +30,7 @@ Given an array nums containing n distinct numbers in the range [0, n], return th
 ```
 
 ## What I Didn't Think About The First Time
-consider using constant time.
-
-i didn't consider while loop because i expected to just swap elements blindly and leave the variable where i was putting the current value, i needed to find all the elements for the current index and only after this shift
+I didn't consider using a while loop because I expected to swap elements blindly and leave the variable where I was placing the current value. I needed to find all the elements for the current index and only shift after that.
 
 ## Solution (C++)
 ```cpp

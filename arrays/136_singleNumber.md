@@ -17,6 +17,7 @@ You must implement a solution with a linear runtime complexity and use only cons
 I was stucked, because needed linear time complexity and constant space complexity,  nums indices themselves because nums[i] withing -int32 to +int32.
 
 ## Actual Approach
+Iterate through numbers and xor with a result each value.
 
 ## What I Didn't Think About The First Time
 If u need to find all the unique elements consider using xor
