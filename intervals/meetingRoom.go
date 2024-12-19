@@ -1,7 +1,3 @@
-package main
-
-import "sort"
-
 func canAttendMeeting(intervals [][]int) bool {
 	sort.Slice(intervals, func(i, j int) bool { // in ASC order by a beginning time
 		return intervals[i][0] < intervals[j][0]
