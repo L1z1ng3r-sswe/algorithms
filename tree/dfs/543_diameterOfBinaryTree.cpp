@@ -4,8 +4,8 @@
 
 struct TreeNode {
   int val;
-  TreeNode *left;
-  TreeNode *right;
+  TreeNode* left;
+  TreeNode* right;
 
   TreeNode() : val(0), left(nullptr), right(nullptr) {}
   TreeNode(int num, TreeNode* l) : val(num), left(l), right(nullptr) {}
@@ -27,16 +27,16 @@ int dfs(TreeNode* root, int* maxDiameter) {
   int left = dfs(root->left, maxDiameter);
   int right = dfs(root->right, maxDiameter);
 
-  *maxDiameter = max(*maxDiameter, left+right);
+  *maxDiameter = max(*maxDiameter, left + right);
 
   return max(left, right) + 1;
 }
 
 class Solution {
-public:
+ public:
   int diameterOfBinaryTree(TreeNode* root) {
     int maxDiameter = 0;
-    
+
     dfs(root, &maxDiameter);
 
     return maxDiameter;
