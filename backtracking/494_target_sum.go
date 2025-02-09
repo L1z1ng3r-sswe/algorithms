@@ -1,32 +1,34 @@
 func findTargetSumWays(nums []int, target int) int {
-	dp := make(map[Pair]int)
+	var n = len(nums)
 
-	var backtrack func(idx int, target int) int
-	backtrack = func(idx int, target int) int {
-		if idx >= len(nums) {
-			if target == 0 {
+	dp := make(map[key]int)
+
+	var backtrack func(start int, sum int) int
+	backtrack = func(start int, sum int) int {
+		if start == n {
+			if sum == target {
 				return 1
 			}
 			return 0
 		}
 
-		if val, ok := dp[Pair{idx, target}]; ok {
+		if val, ok := dp[key{start, sum}]; ok {
 			return val
 		}
 
-		pRes := backtrack(idx+1, target-nums[idx])
-		mRes := backtrack(idx+1, target+nums[idx])
+		subRes := backtrack(start+1, sum-nums[start])
+		addRes := backtrack(start+1, sum+nums[start])
+		res := subRes + addRes
 
-		dp[Pair{idx + 1, target - nums[idx]}] = pRes
-		dp[Pair{idx + 1, target + nums[idx]}] = mRes
+		dp[key{start, sum}] = res
 
-		return pRes + mRes
+		return res
 	}
 
-	return backtrack(0, target)
+	return backtrack(0, 0)
 }
 
-type Pair struct {
-	Idx    int
-	Target int
+type key struct {
+	idx     int
+	currSum int
 }
