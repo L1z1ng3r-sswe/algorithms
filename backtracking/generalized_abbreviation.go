@@ -11,14 +11,12 @@ func generateAbbreviations(word string) []string {
 			return
 		}
 
-		// Добавляем букву как есть (если до этого были сокращения, добавляем их перед буквой)
 		if count > 0 {
 			backtrack(start+1, append(append(abbreviation, []byte(strconv.Itoa(count))...), word[start]), 0)
 		} else {
 			backtrack(start+1, append(abbreviation, word[start]), 0)
 		}
 
-		// Пропускаем букву, увеличивая счётчик
 		backtrack(start+1, abbreviation, count+1)
 	}
 	backtrack(0, []byte{}, 0)
