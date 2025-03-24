@@ -13,4 +13,3 @@ func longestCommonPrefix(strs []string) string {
 }
 
 // time: O(n)
-// time: O(n)
