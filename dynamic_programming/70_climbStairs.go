@@ -21,3 +21,6 @@ func climbStairs(n int) int {
 
 	return dfs(n)
 }
+
+// time: O(n)
+// space: O(n)
