@@ -1,25 +1,26 @@
 func coinChange(coins []int, amount int) int {
 	sort.Ints(coins)
 
-	dp := make([]int, amount+1)
+	lim := amount + 1
+	dp := make([]int, lim)
 	for i := range dp {
-		dp[i] = math.MaxInt64
+		dp[i] = lim
 	}
 	dp[0] = 0
 
 	for i := coins[0]; i <= amount; i++ {
 		for _, coin := range coins {
-			if i >= coin {
-				if dp[i-coin] != math.MaxInt64 {
-					dp[i] = min(dp[i], dp[i-coin]+1)
-				}
-			} else {
+			if i < coin {
 				break
+			}
+
+			if dp[i-coin] != lim && dp[i-coin]+1 < dp[i] {
+				dp[i] = dp[i-coin] + 1
 			}
 		}
 	}
 
-	if dp[amount] == math.MaxInt64 {
+	if dp[amount] == lim {
 		return -1
 	}
 	return dp[amount]
@@ -29,5 +30,11 @@ func min(a, b int) int {
 	if a < b {
 		return a
 	}
+
 	return b
 }
+
+// m - amount
+// n - len(coins)
+// time: O(m*n)
+// space: O(m)
