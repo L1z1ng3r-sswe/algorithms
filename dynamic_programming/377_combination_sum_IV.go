@@ -1,33 +1,37 @@
 func combinationSum4(nums []int, target int) int {
-	dp := make(map[int]int)
+  sort.Ints(nums)
+  
+  dp := make(map[int]int)
 
-	var dfs func(sum int) int
-	dfs = func(sum int) int {
-		if sum == target {
-			return 1
-		}
+  var dfs func(sum int) int
+  dfs = func(sum int) int {
+    if sum == target {
+      return 1
+    }a
 
-		if val, ok := dp[sum]; ok {
-			return val
-		}
+    if val, ok := dp[sum]; ok {
+      return val
+    }
 
-		res := 0
+    res := 0
 
-		for _, num := range nums {
-			if sum+num <= target {
-				res += dfs(sum + num)
-			}
-		}
+    for _, num := range nums {
+      if sum + num <= target {
+        res += dfs(sum+num)
+      } else {
+        break
+      }
+    }
 
-		dp[sum] = res
-		return res
-	}
+    dp[sum] = res
+    return res
+  }
 
-	return dfs(0)
+  return dfs(0)
 }
 
-// T - target
-// N - len(nums)
+// t = target
+// n = len(nums)
 
-// time: O(T*N)
-// space: O(T)
+// time: O(t*n)
+// space: O(t)
