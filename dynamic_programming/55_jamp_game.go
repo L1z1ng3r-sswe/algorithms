@@ -43,4 +43,3 @@ func canJump(nums []int) bool {
 }
 
 // time: O(n)
-// space: O(n)
