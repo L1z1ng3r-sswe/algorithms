@@ -1,8 +1,11 @@
 func findNumberOfLIS(nums []int) int {
 	n := len(nums)
-	dp, opts := make([]int, n), make([]int, n)
-	for i := range opts {
-		dp[i], opts[i] = 1, 1
+
+	dp := make([]int, n)
+	opts := make([]int, n)
+	for i := range dp {
+		dp[i] = 1
+		opts[i] = 1
 	}
 
 	lis := 1
@@ -12,12 +15,13 @@ func findNumberOfLIS(nums []int) int {
 				if dp[i] < dp[j]+1 {
 					dp[i] = dp[j] + 1
 					opts[i] = opts[j]
-				} else if dp[i]-1 == dp[j] {
+				} else if dp[j]+1 == dp[i] { // another option
 					opts[i] += opts[j]
 				}
 			}
 		}
-		if dp[i] > lis {
+
+		if lis < dp[i] {
 			lis = dp[i]
 		}
 	}
@@ -31,3 +35,6 @@ func findNumberOfLIS(nums []int) int {
 
 	return res
 }
+
+// time: O(n^2)
+// space: O(n)
