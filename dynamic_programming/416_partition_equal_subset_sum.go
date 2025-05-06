@@ -48,39 +48,37 @@ func canPartition(nums []int) bool {
 // time: O(n*target)
 // space: O(n*target)
 
-func canPartition(nums []int) bool {
-	var sum int
-	for _, num := range nums {
-		sum += num
-	}
-
-	if sum%2 != 0 {
+func canPartition(nums []int) bool { // 1, 5, 11, 5; target = 11
+	target, ok := getTarget(nums)
+	if !ok {
 		return false
 	}
 
-	target := sum / 2
+	sort.Ints(nums)
 
-	set := make(map[int]struct{})
-	set[0] = struct{}{}
+	possibleSums := make([]bool, target+1)
+	possibleSums[0] = true // no nums are needed to sum up 0
 
 	for _, num := range nums {
-		res := make([]int, 0, len(set))
-		for sum := range set {
-			newSum := sum + num
-
-			if newSum == target {
-				return true
-			} else if newSum < target {
-				res = append(res, newSum)
+		for s := target; s >= num; s-- {
+			if possibleSums[s-num] {
+				possibleSums[s] = true
 			}
 		}
-
-		for _, num := range res {
-			set[num] = struct{}{}
+		if possibleSums[target] {
+			return true
 		}
 	}
 
 	return false
+}
+
+func getTarget(nums []int) (int, bool) {
+	var totalSum int
+	for _, num := range nums {
+		totalSum += num
+	}
+	return totalSum / 2, totalSum%2 == 0
 }
 
 // n - len(nums)
