@@ -1,53 +1,43 @@
 func canPartitionKSubsets(nums []int, k int) bool {
-	target, ok := getTarget(nums, k)
-	if !ok {
-		return false
-	}
-
-	buckets := make([]int, k)
-
-	var backtrack func(idx int) bool
-	backtrack = func(idx int) bool {
-		if idx == len(nums) {
-			for i := 0; i < k; i++ {
-				if buckets[i] != target {
-					return false
-				}
-
-			}
-			return true
-		}
-
-		num := nums[idx]
-		for i := 0; i < k; i++ {
-			if buckets[i]+num <= target {
-				buckets[i] += num
-				if backtrack(idx + 1) {
-					return true
-				}
-				buckets[i] -= num
-
-				if buckets[i] == 0 {
-					break
-				}
-			}
-
-		}
-
-		return false
-	}
-
-	return backtrack(0)
-}
-
-func getTarget(nums []int, k int) (int, bool) {
 	var totalSum int
 	for _, num := range nums {
 		totalSum += num
 	}
+	if totalSum%k != 0 {
+		return false
+	}
+	target := totalSum / k
 
-	return totalSum / k, totalSum%k == 0
+	var backtrack func(currSum int, idx int, k int) bool
+	backtrack = func(currSum int, idx int, k int) bool {
+		if k == 1 {
+			return true
+		}
+
+		if currSum == target {
+			return backtrack(0, 0, k-1)
+		}
+
+		if currSum > target || idx == len(nums) {
+			return false
+		}
+
+		if nums[idx] == 0 {
+			return backtrack(currSum, idx+1, k)
+		}
+
+		temp := nums[idx]
+
+		nums[idx] = 0
+
+		if backtrack(currSum+temp, idx+1, k) {
+			return true
+		}
+
+		nums[idx] = temp
+
+		return backtrack(currSum, idx+1, k)
+	}
+
+	return backtrack(0, 0, k)
 }
-
-// time: O(K^N)
-// space: O(K)
