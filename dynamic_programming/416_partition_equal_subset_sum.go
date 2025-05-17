@@ -1,68 +1,75 @@
 func canPartition(nums []int) bool {
-	var sum int
+	var totalSum int
 	for _, num := range nums {
-		sum += num
+		totalSum += num
 	}
-	if len(nums) == 1 || sum%2 != 0 {
+	if totalSum%2 != 0 {
 		return false
 	}
+	target := totalSum / 2
 
-	target := sum / 2
+	sort.Ints(nums)
+	n := len(nums) - 1
 
 	deadend := make(map[[2]int]struct{})
 
-	var dfs func(idx int, target int) bool
-	dfs = func(idx int, target int) bool {
-		if target == 0 {
+	var dfs func(idx int, sum int) bool
+	dfs = func(idx int, sum int) bool {
+		if sum == target {
 			return true
 		}
 
-		if idx == len(nums) || target < 0 {
+		if idx >= n || sum > target {
 			return false
 		}
 
-		end := [2]int{idx, target}
-		if _, ok := deadend[end]; ok {
+		pair := [2]int{idx, sum}
+		if _, ok := deadend[pair]; ok {
 			return false
 		}
 
-		if dfs(idx+1, target-nums[idx]) {
+		if dfs(idx+1, sum+nums[idx]) {
 			return true
 		}
 
-		if dfs(idx+1, target) {
+		if dfs(idx+1, sum) {
 			return true
 		}
 
-		deadend[end] = struct{}{}
-
+		deadend[pair] = struct{}{}
 		return false
 	}
 
-	return dfs(0, target)
+	return dfs(0, 0)
 }
-
-// target = sum/2
-// n = len(nums)
 
 // time: O(n*target)
 // space: O(n*target)
 
 func canPartition(nums []int) bool { // 1, 5, 11, 5; target = 11
-	target, ok := getTarget(nums)
-	if !ok {
+	var totalSum int
+	for _, num := range nums {
+		totalSum += num
+	}
+	if totalSum%2 != 0 {
 		return false
 	}
+	target := totalSum / 2
 
 	sort.Ints(nums)
 
 	possibleSums := make([]bool, target+1)
-	possibleSums[0] = true // no nums are needed to sum up 0
+	possibleSums[0] = true
 
 	for _, num := range nums {
-		for s := target; s >= num; s-- {
-			if possibleSums[s-num] {
-				possibleSums[s] = true
+		for sum := len(possibleSums) - 1; sum >= 0; sum-- {
+			if possibleSums[sum] {
+				newSum := sum + num
+				if newSum > target {
+					continue
+				}
+
+				possibleSums[newSum] = true
 			}
 		}
 		if possibleSums[target] {
@@ -72,17 +79,6 @@ func canPartition(nums []int) bool { // 1, 5, 11, 5; target = 11
 
 	return false
 }
-
-func getTarget(nums []int) (int, bool) {
-	var totalSum int
-	for _, num := range nums {
-		totalSum += num
-	}
-	return totalSum / 2, totalSum%2 == 0
-}
-
-// n - len(nums)
-// target = sum(nums) / 2
 
 // time: O(n * target)
 // space: O(target)
