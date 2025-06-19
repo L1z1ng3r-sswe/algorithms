@@ -5,62 +5,39 @@ type Robot interface {
 	Clean() // u can't clean the same area twice
 }
 
-type Bot interface {
-	Robot
-	back() bool
-}
-
-func (b bot) back(robot Robot) {
-	b.TurnRight()
-	b.robot.TurnRight()
-	robot.Move()
-	b.TurnRight()
-	b.TurnRight()
-}
-
-// var dirs = [][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}} // right, down, left, up
+// up, right, down, left
+var dirs = [][2]int{{-1, 0}, {0, 1}, {1, 0}, {0, -1}} // up is the first because the initial direction is up
 
 func CleanRoom(robot Robot) {
-	bot := Bot(robot)
+	var back = func() {
+		robot.TurnRight()
+		robot.TurnRight()
+		robot.Move()
+		robot.TurnRight()
+		robot.TurnRight()
+	}
+	visited := make(map[[2]int]struct{})
 
-	visited := make(map[[2]int]bool)
+	var backtrack func(x, y int, dir int)
+	backtrack = func(x, y int, dir int) {
+		visited[[2]int{x, y}] = struct{}{}
+		robot.Clean()
 
-	var backtrack func(x, y int)
-	backtrack = func(x, y int) {
-		pair := [2]int{x, y}
+		for i := 0; i < 4; i++ {
+			newDir := (dir + i) % 4
+			newX := x + dirs[newDir][0]
+			newY := y + dirs[newDir][1]
 
-		if _, ok := visited[pair]; ok {
-			bot.back()
-			return
+			if _, ok := visited[[2]int{newX, newY}]; !ok {
+				if robot.Move() {
+					backtrack(newX, newY, newDir)
+					back()
+				}
+			}
+			robot.TurnRight()
 		}
-
-		// move straight
-		if bot.Move() {
-			backtrack()
-		}
-
-		// move right
-		bot.TurnRight()
-		if bot.Move() {
-			backtrack()
-		}
-
-		// move left
-		bot.TurnRight()
-		bot.TurnRight()
-		if bot.Move() {
-			backtrack()
-		}
-
-		// move back
-		bot.TurnLeft()
-		if bot.Move() {
-			backtrack()
-		}
-
-		bot.Back()
 	}
 
-	backtrack()
+	backtrack(0, 0, 0)
 }
 
