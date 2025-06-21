@@ -40,4 +40,3 @@ func CleanRoom(robot Robot) {
 
 	backtrack(0, 0, 0)
 }
-

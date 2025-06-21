@@ -60,41 +60,32 @@ func canPartitionKSubsets(nums []int, k int) bool {
 		return false
 	}
 	target := totalSum / k
-
-	sort.Sort(sort.Reverse(sort.IntSlice(nums))) // Descending order optimization
 	used := make([]bool, len(nums))
+	sort.Sort(sort.Reverse(sort.IntSlice(nums))) // Descending order optimization
 
-	var backtrack func(idx int, currSum int, kLeft int) bool
-	backtrack = func(idx int, currSum int, kLeft int) bool {
-		// basecase
-		if kLeft == 1 {
+	var backtrack func(idx int, currSum int, k int) bool
+	backtrack = func(idx int, currSum int, k int) bool {
+		if k == 1 {
 			return true
 		}
 
-		// if the current group is filled - start filling the next group
 		if currSum == target {
-			return backtrack(0, 0, kLeft-1)
-		}
-
-		if idx >= len(nums) || currSum > target {
-			return false
+			return backtrack(0, 0, k-1)
 		}
 
 		for i := idx; i < len(nums); i++ {
-			if !used[i] {
+			if !used[i] && currSum+nums[i] <= target {
 				used[i] = true
-				if backtrack(i+1, currSum+nums[i], kLeft) {
+				if backtrack(i+1, currSum+nums[i], k) {
 					return true
 				}
 				used[i] = false
 
-				// optimization: the current number can not be placed anywhere - stop recursion
 				if currSum == 0 {
 					break
 				}
 
-				// optimization: skip duplicate numbers to avoid redundant work
-				for i < len(nums)-1 && nums[i] == nums[i+1] {
+				for i+1 < len(nums) && nums[i] == nums[i+1] {
 					i++
 				}
 			}
