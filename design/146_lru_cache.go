@@ -1,72 +1,74 @@
 type LRUCache struct {
-	cache      map[int]*Node
-	head, rear *Node
-	capacity   int
+	Capacity   int
+	Cache      map[int]*Node
+	Head, Tail *Node
+}
+
+type Node struct {
+	Key        int
+	Val        int
+	Next, Prev *Node
+}
+
+func NewNode(key int, val int, next, prev *Node) *Node {
+	return &Node{
+		key, val, next, prev,
+	}
 }
 
 func Constructor(capacity int) LRUCache {
-	lru := LRUCache{
-		cache:    make(map[int]*Node, capacity),
-		capacity: capacity,
-		head:     &Node{},
-		rear:     &Node{},
+	head, tail := NewNode(-1, 0, nil, nil), NewNode(-1, 0, nil, nil)
+	head.Next = tail
+	tail.Prev = head
+
+	return LRUCache{
+		capacity,
+		make(map[int]*Node, capacity),
+		head,
+		tail,
 	}
-
-	lru.head.next = lru.rear
-	lru.rear.prev = lru.head.next
-
-	return lru
 }
 
-func (c *LRUCache) Get(key int) int {
-	if node, ok := c.cache[key]; ok {
-		node.cut()
-		c.insert(node)
-
-		return node.val
+func (this *LRUCache) Get(key int) int {
+	if node, ok := this.Cache[key]; ok {
+		this.moveToHead(node)
+		return node.Val
 	}
 
 	return -1
 }
 
-func (c *LRUCache) Put(key int, value int) {
-	if node, ok := c.cache[key]; ok { // Just replace
-		node.cut()
-		c.insert(node)
-
-		node.val = value
+func (this *LRUCache) Put(key int, value int) {
+	node, ok := this.Cache[key]
+	if ok {
+		node.Val = value
+		this.moveToHead(node)
 	} else {
-		if len(c.cache) == c.capacity { // Cache is full - shrink
-			delete(c.cache, c.rear.prev.key)
+		node = NewNode(key, value, nil, nil)
+		this.Cache[key] = node
 
-			c.rear.prev.prev.next = c.rear
-			c.rear.prev = c.rear.prev.prev
+		this.insert(node)
+
+		if len(this.Cache) > this.Capacity {
+			delete(this.Cache, this.Tail.Prev.Key)
+			this.remove(this.Tail.Prev)
 		}
-
-		node := &Node{
-			key: key,
-			val: value,
-		}
-
-		c.insert(node)
-
-		c.cache[key] = node
 	}
 }
 
-func (c *LRUCache) insert(node *Node) {
-	node.next = c.head.next
-	node.prev = c.head
-	c.head.next.prev = node
-	c.head.next = node
+func (this *LRUCache) remove(node *Node) {
+	node.Next.Prev = node.Prev
+	node.Prev.Next = node.Next
 }
 
-type Node struct {
-	key, val   int
-	prev, next *Node
+func (this *LRUCache) insert(node *Node) {
+	node.Next = this.Head.Next
+	node.Prev = this.Head
+	this.Head.Next.Prev = node
+	this.Head.Next = node
 }
 
-func (n *Node) cut() {
-	n.next.prev = n.prev
-	n.prev.next = n.next
+func (this *LRUCache) moveToHead(node *Node) {
+	this.remove(node)
+	this.insert(node)
 }
