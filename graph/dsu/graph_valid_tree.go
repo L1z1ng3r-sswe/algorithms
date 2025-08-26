@@ -18,44 +18,53 @@ func ifValidTree(n int, edges [][]int) bool {
 
 type DSU struct {
 	Parent []int
-	Rank   []int
+	Size   []int
 }
 
 func NewDSU(n int) *DSU {
 	var dsu = &DSU{
 		Parent: make([]int, n),
-		Rank:   make([]int, n),
+		Size:   make([]int, n),
 	}
 
 	for i := range dsu.Parent {
 		dsu.Parent[i] = i
+		dsu.Size[i] = 1
 	}
 	return dsu
 }
 
+// Find uses iterative find and path compression
 func (d *DSU) Find(x int) int {
-	if d.Parent[x] != x {
-		d.Parent[x] = d.Find(d.Parent[x])
+	root := x
+	for d.Parent[root] != root {
+		root = d.Parent[root]
 	}
 
-	return d.Parent[x]
+	// path compression
+	for d.Parent[x] != x {
+		nxt := d.Parent[x]
+		d.Parent[x] = root
+		x = nxt
+	}
+
+	return root
 }
 
 // false only if a and b got the same Parent root (cycle detected)
 func (d *DSU) Union(a, b int) bool {
-	rootA, rootB := d.Find(a), d.Find(b)
+	ra, rb := d.Find(a), d.Find(b)
 
-	if rootA == rootB { // cycle detected
+	if ra == rb { // cycle detected
 		return false
 	}
 
-	if d.Rank[rootA] < d.Rank[rootB] {
-		d.Parent[rootA] = rootB
-	} else if d.Rank[rootA] > d.Rank[rootB] {
-		d.Parent[rootB] = rootA
+	if d.Size[ra] < d.Size[rb] {
+		d.Parent[ra] = rb
+		d.Size[rb] += d.Size[ra]
 	} else {
-		d.Rank[rootA]++
-		d.Parent[rootB] = rootA
+		d.Parent[rb] = ra
+		d.Size[ra] += d.Size[rb]
 	}
 
 	return true

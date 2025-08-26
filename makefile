@@ -5,4 +5,6 @@ run:
 	# g++ ${SRC} -o ${DESTINATION_BUILD}
 	# ./${DESTINATION_BUILD}
 
-	go run solution/main.go
+	# go run solution/main.go
+
+	python3 solution/main.py
